@@ -1,5 +1,7 @@
 #!/bin/bash
-
+#
+# Copied from https://github.com/versae/neo4j-rest-client under GPL v3 license.
+#
 
 DEFAULT_VERSION="1.6.3"
 VERSION=${1-$DEFAULT_VERSION}
