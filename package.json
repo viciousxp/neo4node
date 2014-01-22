@@ -1,0 +1,35 @@
+{
+  "name": "neo4node",
+  "version": "0.0.1",
+  "description": "Neo4j adapter for node optimized to Cypher queries",
+  "main": "index",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "request": "2.31.0"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*",
+    "yuidocjs": "*"
+  },
+  "scripts": {
+    "test": "mocha test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/viciousxp/neo4node"
+  },
+  "keywords": [
+    "neo4j",
+    "node",
+    "neo4node",
+    "neo4j-node",
+    "node-neo4j",
+    "cypher"
+  ],
+  "author": "Ramee Mossa",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}
