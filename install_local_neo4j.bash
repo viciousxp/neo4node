@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 DEFAULT_VERSION="1.6.3"
 VERSION=${1-$DEFAULT_VERSION}
 DIR="neo4j-community-$VERSION"
