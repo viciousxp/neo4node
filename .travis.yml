@@ -16,4 +16,3 @@ before_install:
 env:
   - NEO4J_VERSION="1.8.2"
   - NEO4J_VERSION="1.9.4"
-  - NEO4J_VERSION="2.0.0"
