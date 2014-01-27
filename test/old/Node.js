@@ -258,7 +258,10 @@ describe('Node', function (){
       after(function (done) {
           var transaction = new Transaction();
           transaction.format = 'REST';
-          transaction.addStatement('START node = node(*) DELETE node');
+          transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[0]});
+          transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[1]});
+          transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[2]});
+          transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[3]});
           transaction.commit(function (err, results) {
             should.not.exist(err);
           })

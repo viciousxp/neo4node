@@ -21,7 +21,7 @@ describe('Node', function (){
               done();
           });
       });
-      before(function (done) {
+      it('Should create four new nodes and assign them properties', function (done) {
           var transaction = new Transaction();
           transaction.format = 'REST';
           transaction.addStatement('CREATE (node {props}) RETURN node', {props: {}});
@@ -30,8 +30,14 @@ describe('Node', function (){
           transaction.addStatement('CREATE (node {props}) RETURN node', {props: {name: 'Smith'}});
           transaction.commit(function (err, results) {
             should.not.exist(err);
+            results.rest.map(function (result) {
+              var node = new neo4node.Node(result.node);
+              //save node ids in array for tests
+              nodes.push(node.id);
+              nodeObjects.push(node);
+            })
+            done()
           })
-          done()
       })
       describe('Node tests on graph', function (done) {
           it.skip('should index all nodes by name', function (done) {
@@ -256,19 +262,16 @@ describe('Node', function (){
           });
       });
       after(function (done) {
-          nodeObjects[0].delete(true, function (err) {
-              should.not.exist(err);
-              nodeObjects[1].delete(true, function (err) {
-                  should.not.exist(err);
-                  nodeObjects[2].delete(true, function (err) {
-                      should.not.exist(err);
-                      nodeObjects[3].delete(true, function (err) {
-                          should.not.exist(err);
-                          done();
-                      })                      
-                  })
-              })              
+          var transaction = new Transaction();
+          transaction.format = 'REST';
+          transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[0]});
+          transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[1]});
+          transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[2]});
+          transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[3]});
+          transaction.commit(function (err, results) {
+            should.not.exist(err);
           })
+          done()
       })
     });
 });
