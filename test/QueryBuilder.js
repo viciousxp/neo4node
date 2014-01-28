@@ -1,15 +1,15 @@
 var assert = require('assert')
   , QueryBuilder = require('../lib/QueryBuilder')
-  , Transaction = require('../lib/Transaction')
   , neo4node = require('../index')
-  , db = new neo4node.Neo4j()
   , should = require('should');
 
 
 
-describe('Node', function (){
-    describe('Node graph setup', function () {
-      var nodes = [];
+describe('QueryBuilder tests', function (){
+    describe('QueryBuilder test graph setup', function () {
+      var nodes = [],
+          nodeObjects = [];
+
       it('Should create four new nodes', function (done) {
           var query = new QueryBuilder();
           
@@ -19,10 +19,11 @@ describe('Node', function (){
                 .createNode({name: 'Morpheus', role: 'El capitain'})
                 .createNode({name: 'Smith'})
                 .commit(function (err, results) {
+                  should.not.exist(err);
                   results.rest.map(function (result) {
                     var node = new neo4node.Node(result.node);
-                    //save node ids in array for tests
                     nodes.push(node.id);
+                    nodeObjects.push(node);
                   })
                   done()
                 })
@@ -62,7 +63,25 @@ describe('Node', function (){
       it('Should remove label from Smith node', function (done) {
         var query = new QueryBuilder();
 
-        query .setLabel(nodes[3])
+        query .removeLabel(nodes[3], 'PERSON')
+              .commit(function (err, results) {
+                should.not.exist(err);
+                done();
+              })
+      })
+      it('Should add and remove a bunch of labels in one go', function (done) {
+        var query = new QueryBuilder();
+
+        query .setLabel(nodes[0], 'CHOSEN ONE')
+              .setLabel(nodes[0], 'MAN')
+              .setLabel(nodes[1], 'WOMAN')
+              .setLabel(nodes[1], 'HOT')
+              .setLabel(nodes[2], 'CAPTAIN')
+              .setLabel(nodes[2], 'MAN')
+              .setLabel(nodes[2], 'PERSON')
+              .removeLabel(nodes[3], 'PERSON')
+              .setLabel(nodes[3], 'PROGRAMM')
+              .setLabel(nodes[3], 'AGENT')
               .commit(function (err, results) {
                 should.not.exist(err);
                 done();
@@ -80,7 +99,7 @@ describe('Node', function (){
       it('Should update all of Neo\'s properties', function (done) {
         var query = new QueryBuilder();
 
-        query .setProperties(nodes[0], {age: 29, name: 'The chosen one'})
+        query .setProperties(nodes[0], {age: 31, name: 'The chosen one'})
               .commit(function (err, results) {
                 should.not.exist(err);
                 done();
@@ -174,16 +193,16 @@ describe('Node', function (){
               })
       })
       after(function (done) {
-        var query = new QueryBuilder();
+        // var query = new QueryBuilder();
 
-        query .deleteNode(nodes[0], true)
-              .deleteNode(nodes[1], true)
-              .deleteNode(nodes[2], true)
-              .deleteNode(nodes[3], true)
-              .commit(function (err, results) {
-                should.not.exist(err);
+        // query .deleteNode(nodes[0], true)
+        //       .deleteNode(nodes[1], true)
+        //       .deleteNode(nodes[2], true)
+        //       .deleteNode(nodes[3], true)
+        //       .commit(function (err, results) {
+        //         should.not.exist(err);
                 done()
-              })
+        //       })
       })
     });
 });
