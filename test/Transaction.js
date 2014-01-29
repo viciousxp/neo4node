@@ -34,7 +34,6 @@ describe('Transaction', function (){
     });
     it('should commit transaction', function (done) {
         transaction.commit(function (err, results) {
-            console.log('results: ' + JSON.stringify(results));
             should.not.exist(err);
             done();
         })
