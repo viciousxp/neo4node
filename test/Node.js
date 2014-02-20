@@ -1,9 +1,7 @@
 var assert = require('assert')
-  , Transaction = require('../lib/Transaction')
-  , neo4node = require('../index')
+  , neo4node = require('../lib/index')
+  , db = new neo4node('db.sb01.stations.graphenedb.com', '24789', 'neo4node', 'cL4IxXL7xCHY3pTYEKoS')
   , should = require('should');
-
-
 
 describe('Node', function (){
     var nodes = [],
@@ -15,13 +13,13 @@ describe('Node', function (){
             type: 'exact',
             provider: 'lucene'
           }
-          neo4node.Index.createNodeIndex(args, function (err, index) {
+          db.createNodeIndex(args, function (err, index) {
               should.not.exist(err);
               done();
           });
       });
       it('should create test nodes', function (done) {
-        var transaction = new Transaction();
+        var transaction = db.newTransaction();
         transaction.format = 'REST';
         transaction.addStatement('CREATE (node {props}) RETURN node', {props: {}});
         transaction.addStatement('CREATE (node {props}) RETURN node', {props: {name: 'Trinity', gender: 'female'}});
@@ -30,7 +28,7 @@ describe('Node', function (){
         transaction.commit(function (err, results) {
           should.not.exist(err);
           results.rest.map(function (result) {
-            var node = new neo4node.Node(result.node);
+            var node = db.Node(result.node);
             nodes.push(node.id);
             nodeObjects.push(node);
           })
@@ -40,7 +38,7 @@ describe('Node', function (){
     });
     describe('Node methods tests on graph', function (done) {
       it('Should get Neo node and add properties', function (done) {
-        neo4node.Node.getById(nodes[0], function (err, node) {
+        db.getNodeById(nodes[0], function (err, node) {
           should.not.exist(err);
           node.setProperty('name', 'Neo', function (err) {
             should.not.exist(err);
@@ -52,9 +50,9 @@ describe('Node', function (){
         });
       });
       it('Should add "KNOWS" relationship from Neo to Morpheus, and Trinity', function (done) {
-        neo4node.Node.getById(nodes[0], function (err, neo) {
+        db.getNodeById(nodes[0], function (err, neo) {
           should.not.exist(err);
-          neo4node.Node.getById(nodes[2], function (err, morpheus) {
+          db.getNodeById(nodes[2], function (err, morpheus) {
             should.not.exist(err);
             neo.createRelationshipTo(nodeObjects[1], 'KNOWS', {}, function (err) {
               should.not.exist(err);
@@ -67,9 +65,9 @@ describe('Node', function (){
         });
       });
       it('Should add "LOVES" relationship from Trinity to Neo', function (done) {
-        neo4node.Node.getById(nodes[0], function (err, neo) {
+        db.getNodeById(nodes[0], function (err, neo) {
           should.not.exist(err);
-          neo4node.Node.getById(nodes[1], function (err, trinity) {
+          db.getNodeById(nodes[1], function (err, trinity) {
             should.not.exist(err);
             neo.createRelationshipFrom(trinity, 'LOVES', {since: '1998'}, function (err) {
               should.not.exist(err);
@@ -79,7 +77,7 @@ describe('Node', function (){
         });
       });
       it('Should get all of Neo\'s relationships', function (done) {
-        neo4node.Node.getById(nodes[0], function (err, neo) {
+        db.getNodeById(nodes[0], function (err, neo) {
           should.not.exist(err);
           neo.getRelationships(function (err, relationships) {
             should.not.exist(err);
@@ -94,7 +92,7 @@ describe('Node', function (){
         });
       });
       it('Should get all of Neo\'s incoming relationships', function (done) {
-        neo4node.Node.getById(nodes[0], function (err, neo) {
+        db.getNodeById(nodes[0], function (err, neo) {
           should.not.exist(err);
           neo.getIncomingRelationships(function (err, relationships) {
             should.not.exist(err);
@@ -109,7 +107,7 @@ describe('Node', function (){
         });
       });
       it('Should get all of Neo\'s outgoing relationships', function (done) {
-        neo4node.Node.getById(nodes[0], function (err, neo) {
+        db.getNodeById(nodes[0], function (err, neo) {
           should.not.exist(err);
           neo.getOutgoingRelationships(function (err, relationships) {
             should.not.exist(err);
@@ -124,7 +122,7 @@ describe('Node', function (){
         });
       });
       it('Should get all of Neo\'s incoming "LOVES" relationships', function (done) {
-        neo4node.Node.getById(nodes[0], function (err, neo) {
+        db.getNodeById(nodes[0], function (err, neo) {
           should.not.exist(err);
           neo.getIncomingRelationships('LOVES', function (err, relationships) {
             should.not.exist(err);
@@ -139,7 +137,7 @@ describe('Node', function (){
         });
       });
       it('Should get all of Neo\'s outgoing "KNOWS" relationships', function (done) {
-        neo4node.Node.getById(nodes[0], function (err, neo) {
+        db.getNodeById(nodes[0], function (err, neo) {
           should.not.exist(err);
           neo.getOutgoingRelationships('KNOWS', function (err, relationships) {
             should.not.exist(err);
@@ -198,7 +196,7 @@ describe('Node', function (){
     });
     describe('Node graph teardown', function () {
       it('should delete test nodes', function (done) {
-        var transaction = new Transaction();
+        var transaction = db.newTransaction();
         transaction.format = 'REST';
         transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[0]});
         transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[1]});

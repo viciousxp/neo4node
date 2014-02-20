@@ -1,5 +1,5 @@
 var assert = require('assert')
-  , soco = require('../index')
+  , neo4node = require('../index')
   , should = require('should');
 
 //required vars for tests
@@ -26,8 +26,8 @@ createIndexArgs = [
 
 describe('Index', function () {
   describe('Creating, Deleting and Listing', function () {
-    it('Should add exact index "testExactIndex" - soco.Index.createNodeIndex()', function (done) {
-      soco.Index.createNodeIndex(createIndexArgs[0], function (err, index) {
+    it('Should add exact index "testExactIndex" - neo4node.Index.createNodeIndex()', function (done) {
+      neo4node.Index.createNodeIndex(createIndexArgs[0], function (err, index) {
         should.not.exist(err);
         index.should.be.an.instanceOf(Object)
         index.should.have.property('name', 'testExactIndex')
@@ -35,8 +35,8 @@ describe('Index', function () {
         done();
       });
     });
-    it('Should add fulltext index "testFulltextIndex" - soco.Index.createNodeIndex()', function (done) {
-      soco.Index.createNodeIndex(createIndexArgs[1], function (err, index) {
+    it('Should add fulltext index "testFulltextIndex" - neo4node.Index.createNodeIndex()', function (done) {
+      neo4node.Index.createNodeIndex(createIndexArgs[1], function (err, index) {
         should.not.exist(err);
         index.should.be.an.instanceOf(Object)
         index.should.have.property('name', 'testFulltextIndex')
@@ -45,15 +45,15 @@ describe('Index', function () {
       });
     });
     for (var i = 2; i < createIndexArgs.length; i++) {
-      it('Should add index and fail - soco.Index.createNodeIndex()', function (done) {
-        soco.Index.createNodeIndex(createIndexArgs[i], function (err, index) {
+      it('Should add index and fail - neo4node.Index.createNodeIndex()', function (done) {
+        neo4node.Index.createNodeIndex(createIndexArgs[i], function (err, index) {
           err.should.not.be.eql(null);
           done();
         })
       });
     }
-    it('Should get array of node indexes and find "testExactIndex" and "testFulltextIndex" - soco.Index.listNodeIndexes()', function (done) {
-      soco.Index.listNodeIndexes(function (err, indexes) {
+    it('Should get array of node indexes and find "testExactIndex" and "testFulltextIndex" - neo4node.Index.listNodeIndexes()', function (done) {
+      neo4node.Index.listNodeIndexes(function (err, indexes) {
         should.not.exist(err);
         indexes.should.be.instanceof(Array);
 
@@ -69,12 +69,12 @@ describe('Index', function () {
         done();
       });
     });
-    it('Delete "testExactIndex" and "testFulltextIndex" and ensure dont exist - Index.delete(), soco.Index.listNodeIndexes()', function (done) {
-      var index1 = new soco.Index({
+    it('Delete "testExactIndex" and "testFulltextIndex" and ensure dont exist - Index.delete(), neo4node.Index.listNodeIndexes()', function (done) {
+      var index1 = new neo4node.Index({
             name: 'testExactIndex',
             indexType: 'node'
           }),
-          index2 = new soco.Index({
+          index2 = new neo4node.Index({
             name: 'testFulltextIndex',
             indexType: 'node'
           });
@@ -82,7 +82,7 @@ describe('Index', function () {
         should.not.exist(err);
         index2.delete(function (err) {
           should.not.exist(err);
-          soco.Index.listNodeIndexes(function (err, indexes) {
+          neo4node.Index.listNodeIndexes(function (err, indexes) {
             should.not.exist(err);
             indexes.should.be.instanceof(Array);
 
@@ -100,8 +100,8 @@ describe('Index', function () {
         });          
       });
     });
-    it('Should add exact relationship index "testExactIndex" - soco.Index.createRelationshipIndex()', function (done) {
-      soco.Index.createRelationshipIndex(createIndexArgs[0], function (err, index) {
+    it('Should add exact relationship index "testExactIndex" - neo4node.Index.createRelationshipIndex()', function (done) {
+      neo4node.Index.createRelationshipIndex(createIndexArgs[0], function (err, index) {
         should.not.exist(err);
         index.should.be.an.instanceOf(Object)
         index.should.have.property('name', 'testExactIndex')
@@ -109,8 +109,8 @@ describe('Index', function () {
         done();
       });
     });
-    it('Should add relationship fulltext index "testFulltextIndex" - soco.Index.createRelationshipIndex()', function (done) {
-      soco.Index.createRelationshipIndex(createIndexArgs[1], function (err, index) {
+    it('Should add relationship fulltext index "testFulltextIndex" - neo4node.Index.createRelationshipIndex()', function (done) {
+      neo4node.Index.createRelationshipIndex(createIndexArgs[1], function (err, index) {
         should.not.exist(err);
         index.should.be.an.instanceOf(Object)
         index.should.have.property('name', 'testFulltextIndex')
@@ -119,15 +119,15 @@ describe('Index', function () {
       });
     });
     for (var i = 2; i < createIndexArgs.length; i++) {
-      it('Should add index and fail - soco.Index.createRelationshipIndex()', function (done) {
-        soco.Index.createRelationshipIndex(createIndexArgs[i], function (err, index) {
+      it('Should add index and fail - neo4node.Index.createRelationshipIndex()', function (done) {
+        neo4node.Index.createRelationshipIndex(createIndexArgs[i], function (err, index) {
           err.should.not.be.eql(null);
           done();
         })
       });
     }
-    it('Should get array of relationship indexes and find "testExactIndex" and "testFulltextIndex" - soco.Index.listRelationshipIndexes()', function (done) {
-      soco.Index.listRelationshipIndexes(function (err, indexes) {
+    it('Should get array of relationship indexes and find "testExactIndex" and "testFulltextIndex" - neo4node.Index.listRelationshipIndexes()', function (done) {
+      neo4node.Index.listRelationshipIndexes(function (err, indexes) {
         should.not.exist(err);
         indexes.should.be.instanceof(Array);
         var testExactIndex = false,
@@ -141,12 +141,12 @@ describe('Index', function () {
         done();
       });
     });
-    it('Should list array of relationship indexes and not find "testExactIndex" and "testFulltextIndex" - soco.Index.listRelationshipIndexes()', function (done) {
-      var index1 = new soco.Index({
+    it('Should list array of relationship indexes and not find "testExactIndex" and "testFulltextIndex" - neo4node.Index.listRelationshipIndexes()', function (done) {
+      var index1 = new neo4node.Index({
             name: 'testExactIndex',
             indexType: 'relationship'
           }),
-          index2 = new soco.Index({
+          index2 = new neo4node.Index({
             name: 'testFulltextIndex',
             indexType: 'relationship'
           });
@@ -154,7 +154,7 @@ describe('Index', function () {
         should.not.exist(err);
         index2.delete(function (err) {
           should.not.exist(err);
-          soco.Index.listRelationshipIndexes(function (err, indexes) {
+          neo4node.Index.listRelationshipIndexes(function (err, indexes) {
             should.not.exist(err);
             indexes.should.be.instanceof(Array);
 
@@ -173,11 +173,11 @@ describe('Index', function () {
       });
     });
     it('Should return error on invalid index delete - Index.prototype.delete()', function (done) {
-      var index1 = new soco.Index(),
-          index2 = new soco.Index({
+      var index1 = new neo4node.Index(),
+          index2 = new neo4node.Index({
             indexType: 'node'
           });
-          index3 = new soco.Index({
+          index3 = new neo4node.Index({
             name: 'testIndex'
           });
       (function () {
@@ -198,7 +198,7 @@ describe('Index', function () {
       done();
     });
     it('Should try to delete non-existing index and return error - Index.prototype.delete()', function (done) {
-      var randomIndex = new soco.Index({
+      var randomIndex = new neo4node.Index({
             name: 'some random index which doesnt exist',
             indexType: 'node'
           });
@@ -213,13 +213,13 @@ describe('Index', function () {
         type: 'exact',
         provider: 'lucene'
       }
-      soco.Index.createNodeIndex(index, function (err, index) {
+      neo4node.Index.createNodeIndex(index, function (err, index) {
         should.not.exist(err);
         index.should.be.an.instanceOf(Object)
         index.should.have.property('name', 'testIndex')
         index.should.have.property('type', 'exact');
 
-        var deleteIndex = new soco.Index({
+        var deleteIndex = new neo4node.Index({
           name: 'testIndex',
           indexType: 'node'
         });
