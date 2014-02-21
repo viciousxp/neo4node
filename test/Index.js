@@ -1,5 +1,6 @@
 var assert = require('assert')
-  , neo4node = require('../index')
+  , neo4node = require('../lib/index')
+  , db = new neo4node('neo4node.sb01.stations.graphenedb.com', '24789', 'neo4node', 'cL4IxXL7xCHY3pTYEKoS')
   , should = require('should');
 
 //required vars for tests
@@ -26,8 +27,8 @@ createIndexArgs = [
 
 describe('Index', function () {
   describe('Creating, Deleting and Listing', function () {
-    it('Should add exact index "testExactIndex" - neo4node.Index.createNodeIndex()', function (done) {
-      neo4node.Index.createNodeIndex(createIndexArgs[0], function (err, index) {
+    it('Should add exact index "testExactIndex" - db.createNodeIndex()', function (done) {
+      db.createNodeIndex(createIndexArgs[0], function (err, index) {
         should.not.exist(err);
         index.should.be.an.instanceOf(Object)
         index.should.have.property('name', 'testExactIndex')
@@ -35,8 +36,8 @@ describe('Index', function () {
         done();
       });
     });
-    it('Should add fulltext index "testFulltextIndex" - neo4node.Index.createNodeIndex()', function (done) {
-      neo4node.Index.createNodeIndex(createIndexArgs[1], function (err, index) {
+    it('Should add fulltext index "testFulltextIndex" - db.createNodeIndex()', function (done) {
+      db.createNodeIndex(createIndexArgs[1], function (err, index) {
         should.not.exist(err);
         index.should.be.an.instanceOf(Object)
         index.should.have.property('name', 'testFulltextIndex')
@@ -45,15 +46,15 @@ describe('Index', function () {
       });
     });
     for (var i = 2; i < createIndexArgs.length; i++) {
-      it('Should add index and fail - neo4node.Index.createNodeIndex()', function (done) {
-        neo4node.Index.createNodeIndex(createIndexArgs[i], function (err, index) {
+      it('Should add index and fail - db.createNodeIndex()', function (done) {
+        db.createNodeIndex(createIndexArgs[i], function (err, index) {
           err.should.not.be.eql(null);
           done();
         })
       });
     }
-    it('Should get array of node indexes and find "testExactIndex" and "testFulltextIndex" - neo4node.Index.listNodeIndexes()', function (done) {
-      neo4node.Index.listNodeIndexes(function (err, indexes) {
+    it('Should get array of node indexes and find "testExactIndex" and "testFulltextIndex" - db.listNodeIndexes()', function (done) {
+      db.listNodeIndexes(function (err, indexes) {
         should.not.exist(err);
         indexes.should.be.instanceof(Array);
 
@@ -69,20 +70,12 @@ describe('Index', function () {
         done();
       });
     });
-    it('Delete "testExactIndex" and "testFulltextIndex" and ensure dont exist - Index.delete(), neo4node.Index.listNodeIndexes()', function (done) {
-      var index1 = new neo4node.Index({
-            name: 'testExactIndex',
-            indexType: 'node'
-          }),
-          index2 = new neo4node.Index({
-            name: 'testFulltextIndex',
-            indexType: 'node'
-          });
-      index1.delete(function (err) {
+    it('Should delete Node indexes "testExactIndex" and "testFulltextIndex" and ensure dont exist', function (done) {
+      db.deleteNodeIndex('testExactIndex', function (err) {
         should.not.exist(err);
-        index2.delete(function (err) {
+        db.deleteNodeIndex('testFulltextIndex', function (err) {
           should.not.exist(err);
-          neo4node.Index.listNodeIndexes(function (err, indexes) {
+          db.listNodeIndexes(function (err, indexes) {
             should.not.exist(err);
             indexes.should.be.instanceof(Array);
 
@@ -100,8 +93,8 @@ describe('Index', function () {
         });          
       });
     });
-    it('Should add exact relationship index "testExactIndex" - neo4node.Index.createRelationshipIndex()', function (done) {
-      neo4node.Index.createRelationshipIndex(createIndexArgs[0], function (err, index) {
+    it('Should add exact relationship index "testExactIndex" - db.createRelationshipIndex()', function (done) {
+      db.createRelationshipIndex(createIndexArgs[0], function (err, index) {
         should.not.exist(err);
         index.should.be.an.instanceOf(Object)
         index.should.have.property('name', 'testExactIndex')
@@ -109,8 +102,8 @@ describe('Index', function () {
         done();
       });
     });
-    it('Should add relationship fulltext index "testFulltextIndex" - neo4node.Index.createRelationshipIndex()', function (done) {
-      neo4node.Index.createRelationshipIndex(createIndexArgs[1], function (err, index) {
+    it('Should add relationship fulltext index "testFulltextIndex" - db.createRelationshipIndex()', function (done) {
+      db.createRelationshipIndex(createIndexArgs[1], function (err, index) {
         should.not.exist(err);
         index.should.be.an.instanceOf(Object)
         index.should.have.property('name', 'testFulltextIndex')
@@ -119,15 +112,15 @@ describe('Index', function () {
       });
     });
     for (var i = 2; i < createIndexArgs.length; i++) {
-      it('Should add index and fail - neo4node.Index.createRelationshipIndex()', function (done) {
-        neo4node.Index.createRelationshipIndex(createIndexArgs[i], function (err, index) {
+      it('Should add index and fail - db.createRelationshipIndex()', function (done) {
+        db.createRelationshipIndex(createIndexArgs[i], function (err, index) {
           err.should.not.be.eql(null);
           done();
         })
       });
     }
-    it('Should get array of relationship indexes and find "testExactIndex" and "testFulltextIndex" - neo4node.Index.listRelationshipIndexes()', function (done) {
-      neo4node.Index.listRelationshipIndexes(function (err, indexes) {
+    it('Should get array of relationship indexes and find "testExactIndex" and "testFulltextIndex" - db.listRelationshipIndexes()', function (done) {
+      db.listRelationshipIndexes(function (err, indexes) {
         should.not.exist(err);
         indexes.should.be.instanceof(Array);
         var testExactIndex = false,
@@ -141,20 +134,12 @@ describe('Index', function () {
         done();
       });
     });
-    it('Should list array of relationship indexes and not find "testExactIndex" and "testFulltextIndex" - neo4node.Index.listRelationshipIndexes()', function (done) {
-      var index1 = new neo4node.Index({
-            name: 'testExactIndex',
-            indexType: 'relationship'
-          }),
-          index2 = new neo4node.Index({
-            name: 'testFulltextIndex',
-            indexType: 'relationship'
-          });
-      index1.delete(function (err) {
+    it('Should delete Relationship indexes "testExactIndex" and "testFulltextIndex" and ensure dont exist', function (done) {
+      db.deleteRelationshipIndex('testExactIndex', function (err) {
         should.not.exist(err);
-        index2.delete(function (err) {
+        db.deleteRelationshipIndex('testFulltextIndex', function (err) {
           should.not.exist(err);
-          neo4node.Index.listRelationshipIndexes(function (err, indexes) {
+          db.listRelationshipIndexes(function (err, indexes) {
             should.not.exist(err);
             indexes.should.be.instanceof(Array);
 
@@ -173,57 +158,30 @@ describe('Index', function () {
       });
     });
     it('Should return error on invalid index delete - Index.prototype.delete()', function (done) {
-      var index1 = new neo4node.Index(),
-          index2 = new neo4node.Index({
-            indexType: 'node'
-          });
-          index3 = new neo4node.Index({
-            name: 'testIndex'
-          });
       (function () {
-        index1.delete();
-      }).should.throwError();
-      (function () {
-        index2.delete(function (err) {
-          if (err)
-            throw new Error();
-        });
-      }).should.throwError();
-      (function () {
-        index3.delete(function (err) {
-          if (err)
-            throw new Error();
-        });
+        db.deleteNodeIndex(function (err) {})
       }).should.throwError();
       done();
     });
-    it('Should try to delete non-existing index and return error - Index.prototype.delete()', function (done) {
-      var randomIndex = new neo4node.Index({
-            name: 'some random index which doesnt exist',
-            indexType: 'node'
-          });
-      randomIndex.delete(function (err) {
+    it('Should try to delete non-existing Node index and return error', function (done) {
+      db.deleteNodeIndex('some random index which doesnt exist', function (err) {
         should.exist(err);
         done();
       });
     });
-    it('Should delete index - Index.prototype.delete()', function (done) {
+    it('Should create and then delete index', function (done) {
       var index = {
         name: 'testIndex',
         type: 'exact',
         provider: 'lucene'
       }
-      neo4node.Index.createNodeIndex(index, function (err, index) {
+      db.createNodeIndex(index, function (err, index) {
         should.not.exist(err);
         index.should.be.an.instanceOf(Object)
         index.should.have.property('name', 'testIndex')
         index.should.have.property('type', 'exact');
 
-        var deleteIndex = new neo4node.Index({
-          name: 'testIndex',
-          indexType: 'node'
-        });
-        deleteIndex.delete(function (err) {
+        db.deleteNodeIndex(index.name, function (err) {
           should.not.exist(err);
           done();
         });
@@ -231,12 +189,12 @@ describe('Index', function () {
     });
   });
   describe('Indexing nodes and querying legacy indexes', function () {
-    it('Should create 4 new nodes and relationships between them')
-    it('Should create one legacy node index and one legacy relationship index')
-    it('Should index all four nodes and all relationships')
-    it('Should perform several queries on the legacy node index')
-    it('Should perform several queries on the legacy relationship index')
-    it('should remove some nodes and some relationships from legacy indexes')
-    it('should delete all nodes, relationships and test legacy indexes')
+    it.skip('Should create 4 new nodes and relationships between them')
+    it.skip('Should create one legacy node index and one legacy relationship index')
+    it.skip('Should index all four nodes and all relationships')
+    it.skip('Should perform several queries on the legacy node index')
+    it.skip('Should perform several queries on the legacy relationship index')
+    it.skip('should remove some nodes and some relationships from legacy indexes')
+    it.skip('should delete all nodes, relationships and test legacy indexes')
   })
 });
