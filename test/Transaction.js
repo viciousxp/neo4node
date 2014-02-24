@@ -1,10 +1,11 @@
 var assert = require('assert')
   , neo4node = require('../lib/index')
   , db = new neo4node('neo4node.sb01.stations.graphenedb.com', '24789', 'neo4node', 'cL4IxXL7xCHY3pTYEKoS')
+  , Transaction = neo4node.Transaction
   , should = require('should');
 
 describe('Transaction', function (){
-    var transaction = db.newTransaction()
+    var transaction = new Transaction();
     it('should add statement to a transaction', function (done) {
         var query = 'CREATE (n {props}) RETURN n',
             params = {

@@ -1,6 +1,8 @@
 var assert = require('assert')
   , neo4node = require('../lib/index')
   , db = new neo4node('db.sb01.stations.graphenedb.com', '24789', 'neo4node', 'cL4IxXL7xCHY3pTYEKoS')
+  , Transaction = neo4node.Transaction
+  , Node = neo4node.Node
   , should = require('should');
 
 describe('Node', function (){
@@ -19,7 +21,7 @@ describe('Node', function (){
           });
       });
       it('should create test nodes', function (done) {
-        var transaction = db.newTransaction();
+        var transaction = new Transaction();
         transaction.format = 'REST';
         transaction.addStatement('CREATE (node {props}) RETURN node', {props: {}});
         transaction.addStatement('CREATE (node {props}) RETURN node', {props: {name: 'Trinity', gender: 'female'}});
@@ -28,7 +30,7 @@ describe('Node', function (){
         transaction.commit(function (err, results) {
           should.not.exist(err);
           results.rest.map(function (result) {
-            var node = db.Node(result.node);
+            var node = new Node(result.node);
             nodes.push(node.id);
             nodeObjects.push(node);
           })
@@ -196,7 +198,7 @@ describe('Node', function (){
     });
     describe('Node graph teardown', function () {
       it('should delete test nodes', function (done) {
-        var transaction = db.newTransaction();
+        var transaction = new Transaction();
         transaction.format = 'REST';
         transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[0]});
         transaction.addStatement('START node = node({id}) OPTIONAL MATCH node -[relationships]- () DELETE relationships, node', {id: nodes[1]});

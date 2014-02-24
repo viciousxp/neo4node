@@ -1,6 +1,6 @@
 {
   "name": "neo4node",
-  "version": "0.0.1",
+  "version": "0.1.2",
   "description": "Neo4j adapter for node optimized to Cypher queries",
   "main": "index",
   "directories": {
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/viciousxp/neo4node"
+    "url": "git://github.com/viciousxp/neo4node/tree/0.1.2"
   },
   "keywords": [
     "neo4j",
